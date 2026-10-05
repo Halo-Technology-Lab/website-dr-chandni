@@ -1,0 +1,4 @@
+# The handover is Skalr's generated output and site/ is served as-is, so both
+# are kept byte for byte: no line-ending conversion on checkout or commit.
+handover/** -text
+site/** -text

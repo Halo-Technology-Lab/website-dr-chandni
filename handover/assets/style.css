@@ -1,0 +1,320 @@
+:root{
+  /* colour tokens (tokens.json defines a single light theme) */
+  --forest:#142802;
+  --sage-ink:#535A4C;
+  --slate:#3F444B;
+  --charcoal:#33373D;
+  --black:#000000;
+  --white:#FFFFFF;
+  --linen:#F3F4F2;
+  --taupe:#E4DBD4;
+  --sage-mist:#E7EAE3;
+  --sage-light:#DCE0D8;
+  --accent:#F47F40;
+  /* type */
+  --font-display:"Cormorant Upright",Georgia,serif;
+  --font-text:Montserrat,system-ui,-apple-system,sans-serif;
+  /* shape + layout */
+  --radius-pill:50px;
+  --radius-input:7px;
+  --content-max:1024px;
+  color-scheme:light;
+}
+
+/* tokens.json defines only a light theme, so the page is forced light and is
+   never auto-darkened by the browser or OS into something off-brand. */
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{background:var(--linen);color:var(--sage-ink);-webkit-text-size-adjust:100%}
+
+body{
+  margin:0;
+  background:var(--linen);
+  color:var(--sage-ink);
+  font-family:var(--font-text);
+  font-size:14px;      /* brand rule: small, airy body */
+  line-height:1.8;
+  font-weight:400;
+  overflow-x:hidden;
+}
+
+img{max-width:100%;height:auto;display:block}
+
+/* form controls: 16px minimum to stop iOS zooming on focus */
+input,select,textarea,button{font-size:16px;font-family:inherit}
+
+/* ---- headings (Cormorant Upright, uppercase, forest) ---- */
+h1,h2,h3,h4{
+  font-family:var(--font-display);
+  font-weight:500;
+  text-transform:uppercase;
+  color:var(--forest);
+  margin:0;
+  letter-spacing:.5px;
+  overflow-wrap:break-word;
+}
+h1{font-size:clamp(32px,7.5vw,58px);line-height:1.08}
+h2{font-size:clamp(26px,5vw,40px);line-height:1.18}
+h3{font-size:clamp(19px,3.6vw,25px);line-height:1.25}
+h4{font-size:19px;line-height:1.2}
+
+p{margin:0 0 1.1em;max-width:65ch}
+.prose p:last-child,.price-card p:last-child{margin-bottom:0}
+
+a{color:var(--forest);text-decoration:underline;text-underline-offset:3px}
+a:hover{color:var(--black)}
+
+/* ---- eyebrow + small labels ---- */
+.eyebrow{
+  font-size:13px;
+  font-weight:500;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:var(--sage-ink);
+  margin:0 0 12px;
+}
+.accent-rule{display:block;width:44px;height:3px;background:var(--accent);margin:0 0 22px}
+.sec-head-centered .accent-rule{margin-left:auto;margin-right:auto}
+
+/* ---- layout ---- */
+.wrap{width:100%;max-width:var(--content-max);margin:0 auto;padding:0 20px}
+.wrap-narrow{max-width:760px}
+.section{padding:52px 0}
+.band-linen{background:var(--linen)}
+.band-taupe{background:var(--taupe)}
+.band-mist{background:var(--sage-mist)}
+
+.sec-head{margin:0 0 32px}
+.sec-head-centered{text-align:center}
+.sec-head-centered .sec-intro{margin-left:auto;margin-right:auto}
+.sec-intro{margin-top:14px;color:var(--sage-ink)}
+
+/* ---- skip link ---- */
+.skip{position:absolute;left:-9999px;top:auto}
+.skip:focus{
+  position:fixed;left:16px;top:16px;z-index:200;
+  background:var(--forest);color:var(--white);
+  padding:14px 22px;border-radius:8px;text-decoration:none;font-size:15px;
+}
+
+/* ---- focus ring (never remove without a replacement) ---- */
+a:focus-visible,.btn:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:3px solid var(--forest);
+  outline-offset:3px;
+}
+
+/* ---- buttons (pills; >=44px touch target) ---- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:52px;min-width:44px;
+  padding:15px 34px;
+  border-radius:var(--radius-pill);
+  font-size:15px;line-height:1.3;font-weight:400;
+  text-decoration:none;text-align:center;text-wrap:balance;
+  transition:background-color .2s ease,color .2s ease,border-color .2s ease;
+}
+.btn-primary{background:var(--black);color:var(--white)}
+.btn-primary:hover{background:var(--forest);color:var(--white)}
+.btn-secondary{background:var(--white);color:var(--forest);border:2px solid var(--forest)}
+.btn-secondary:hover{background:var(--forest);color:var(--white)}
+.btn-lg{min-height:56px;font-size:16px;padding:17px 38px}
+.cta-group{display:flex;flex-wrap:wrap;gap:16px;margin:24px 0 0}
+
+/* ---- header ---- */
+.site-header{background:var(--taupe)}
+.header-inner{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  gap:12px;padding:16px 20px;
+}
+/* the logo is a traced vector, so one file serves every size and density.
+   height is the control dimension; width follows the 1992:832 ratio. */
+.logo{display:block;height:auto;max-width:100%}
+.logo-header{width:168px}
+.logo-footer{width:208px;margin-bottom:16px}
+.header-phone{
+  display:inline-flex;align-items:center;gap:8px;min-height:44px;
+  color:var(--forest);text-decoration:none;font-weight:500;font-size:15px;
+  white-space:nowrap;
+}
+.header-phone:hover{color:var(--black)}
+
+/* ---- hero ---- */
+.hero{padding:44px 0 48px}
+.hero-grid{display:grid;gap:32px}
+.hero-inner{max-width:820px}
+/* photographs: square corners and no shadow, in keeping with the rest */
+.photo{display:block;width:100%;height:auto;background:var(--sage-light)}
+.hero-figure,.figure-wide{margin:0}
+.figure-wide{margin-top:34px}
+.photo-hero{aspect-ratio:4/5;object-fit:cover}
+.photo-wide{aspect-ratio:3/2;object-fit:cover}
+.hero-sub{font-size:16px;line-height:1.7;color:var(--charcoal);max-width:60ch;margin-top:18px}
+.hero-note{font-size:13px;color:var(--sage-ink);margin-top:16px}
+
+/* ---- journey steps (square cards) ---- */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.step{background:var(--taupe);padding:26px 24px;position:relative}
+.step-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:50%;
+  background:var(--forest);color:var(--white);
+  font-family:var(--font-display);font-size:20px;margin-bottom:14px;
+}
+.step h3{margin-bottom:10px;color:var(--forest)}
+.step p{color:var(--sage-ink);margin-bottom:0}
+
+/* ---- pillars ---- */
+.pillars{display:grid;gap:22px}
+.pillar h3{margin-bottom:8px}
+.pillar p{margin-bottom:0}
+
+/* ---- price ---- */
+.price-card{background:var(--taupe);padding:28px 24px}
+.price-line{font-family:var(--font-display);text-transform:uppercase;color:var(--forest);
+  font-size:clamp(20px,4vw,26px);line-height:1.25;letter-spacing:.5px}
+.fine{font-size:13px;color:var(--charcoal)}
+
+/* ---- faq (accordion) ---- */
+.faq-list{display:grid;gap:12px}
+.faq{background:var(--linen);border:1px solid var(--sage-light)}
+.faq summary{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  min-height:44px;padding:16px 20px;cursor:pointer;list-style:none;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq-q{font-family:var(--font-display);text-transform:uppercase;color:var(--forest);
+  font-size:17px;line-height:1.3;letter-spacing:.5px}
+.faq-mark{position:relative;flex:none;width:16px;height:16px}
+.faq-mark::before,.faq-mark::after{
+  content:"";position:absolute;background:var(--forest);
+  transition:transform .2s ease;
+}
+.faq-mark::before{left:0;top:7px;width:16px;height:2px}
+.faq-mark::after{left:7px;top:0;width:2px;height:16px}
+.faq[open] .faq-mark::after{transform:scaleY(0)}
+.faq-a{padding:0 20px 18px}
+.faq-a p{margin-bottom:0}
+
+/* ---- booking ---- */
+.book-intro{margin:0 auto 24px;text-align:center}
+.booking-box:not(.booking-fallback){
+  min-height:640px;              /* reserve height so nothing jumps on load */
+}
+.booking-box{
+  width:100%;
+  background:var(--linen);
+  border:1px solid var(--sage-light);
+}
+.booking-frame{width:100%;height:640px;border:0;display:block}
+.booking-fallback{
+  /* the fallback has no async load, so it sizes to its content. The reserve
+     height is scoped to .booking-box:not(.booking-fallback) so it holds space
+     for the live iframe only and never leaves an empty panel here. */
+  display:flex;align-items:center;justify-content:center;
+  background:var(--taupe);border-color:transparent;padding:56px 24px;
+}
+.fallback-inner{max-width:460px;text-align:center}
+.fallback-h{margin:0 0 14px}
+.fallback-p{font-size:15px;margin:0 auto 22px;max-width:42ch}
+.fallback-alt{font-size:14px;margin:18px 0 0}
+
+/* ---- embedded enquiry form ---- */
+.form-box{
+  width:100%;
+  min-height:1114px;            /* the builder's height; reserves space so the
+                                   page does not jump when the embed resizes */
+  background:var(--linen);
+}
+.form-frame{width:100%;height:1114px;border:0;display:block}
+.form-alt{font-size:14px;margin:20px 0 0;text-align:center}
+.form-alt a{display:inline-flex;align-items:center;min-height:44px}
+.fallback-alt a{display:inline-flex;align-items:center;min-height:44px}
+
+/* ---- draft notice on the privacy page ---- */
+.draft-note{
+  border:2px solid var(--accent);background:var(--white);
+  padding:16px 18px;margin:22px 0 4px;font-size:14px;line-height:1.6;
+  color:var(--charcoal);max-width:70ch;
+}
+
+/* ---- consent banner ---- */
+.consent{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:var(--taupe);border-top:1px solid var(--sage-light);
+  padding:18px 0 20px;
+}
+.consent[hidden]{display:none}
+.consent-inner{
+  max-width:var(--content-max);margin:0 auto;padding:0 20px;
+  display:grid;gap:14px;
+}
+.consent-text{font-size:14px;line-height:1.6;color:var(--charcoal);margin:0;max-width:78ch}
+.consent-text a{color:var(--forest)}
+.consent-actions{display:flex;flex-wrap:wrap;gap:12px}
+.consent-btn{font-size:14px;min-height:48px;padding:13px 26px}
+.footer-legal a[data-consent-reopen]{margin-left:10px}
+
+/* ---- compliance strip ---- */
+.compliance{padding:26px 0}
+.compliance p{font-size:13px;color:var(--charcoal);margin:0;max-width:none;text-align:center}
+
+/* ---- footer ---- */
+.site-footer{background:var(--taupe);padding:44px 0 28px}
+.footer-grid{display:grid;gap:28px}
+.footer-h{margin:0 0 10px}
+.footer-col p{font-size:14px;margin:0 0 8px}
+.footer-about{color:var(--sage-ink)}
+.footer-phone{font-weight:500}
+/* footer contact links are real tap targets on mobile: with online booking
+   off, the phone number is the conversion. 44px high, comfortably spaced. */
+.footer-col p a{display:inline-flex;align-items:center;min-height:44px}
+.footer-col p{margin:0}
+.footer-legal{margin-top:30px;border-top:1px solid var(--sage-light);padding-top:20px}
+.footer-legal p{font-size:12px;color:var(--charcoal);margin:0 0 6px;max-width:none}
+
+/* =========================================================
+   RESPONSIVE  (mobile-first; min-width only, never max-width)
+   ========================================================= */
+@media (min-width:600px){
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .pillars{grid-template-columns:1fr 1fr}
+  .hero-note{max-width:60ch}
+}
+@media (min-width:900px){
+  .consent-inner{grid-template-columns:1fr auto;align-items:center;gap:28px}
+  .section{padding:70px 0}
+  .hero{padding:64px 0 68px}
+  .hero-grid{grid-template-columns:1fr 0.82fr;gap:52px;align-items:center}
+  .hero-inner{max-width:none}
+  .steps{grid-template-columns:repeat(3,1fr)}
+  .pillars{grid-template-columns:repeat(4,1fr)}
+  .footer-grid{grid-template-columns:2fr 1fr 1fr}
+  .booking-box:not(.booking-fallback){min-height:760px}
+  .booking-frame{height:760px}
+  .logo-header{width:210px}
+  .logo-footer{width:240px}
+}
+
+/* =========================================================
+   MOTION  (quiet; fully disabled for reduced-motion)
+   ========================================================= */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    transition:none !important;
+    animation:none !important;
+    scroll-behavior:auto !important;
+  }
+}
+
+/* =========================================================
+   PRINT  (facts a patient needs; no embed)
+   ========================================================= */
+@media print{
+  .cta-group,.booking-box:not(.booking-fallback),.form-box,.skip,.photo,.consent,.header-phone,.accent-rule,.faq-mark{display:none !important}
+  body{font-size:12px;color:#000;background:#fff}
+  .band-taupe,.band-mist,.band-linen,.site-header,.site-footer{background:#fff !important}
+  .faq[open] .faq-a,.faq-a{display:block !important}
+  a{color:#000;text-decoration:none}
+  .section{padding:14px 0}
+}
