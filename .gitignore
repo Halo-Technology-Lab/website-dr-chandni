@@ -1,0 +1,11 @@
+# Dependencies
+node_modules
+
+# Local Netlify folder (CLI site linkage)
+.netlify
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode
+.idea
