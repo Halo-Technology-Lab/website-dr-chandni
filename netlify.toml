@@ -1,0 +1,77 @@
+# Dr Chandni Aesthetics - paid landing pages (Facial Rebalancing and CO2 laser,
+# Google and Meta variants, thank-you page, privacy notice).
+#
+# Static site, no build step on Netlify. site/ is generated locally from
+# Skalr's handover by `npm run build`, checked by `npm run verify`, and
+# committed. Netlify publishes it as-is. Same shape as sutton-smiles: no
+# [[plugins]], no [functions], no environment variables.
+#
+# site/ is the domain root on purpose: Skalr's README requires thank-you.html
+# at the root (the GHL forms redirect to /thank-you.html?t=facial|co2) and the
+# privacy notice at /privacy-policy/.
+
+[build]
+  publish = "site"
+
+# No clean-URL rewrites. The .html URLs are the ones the ads and the GHL
+# redirects use, and a trailing-slash rewrite (e.g. /co2-laser-google/) would
+# resolve the pages' relative assets/ paths against the wrong folder.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# ---------------------------------------------------------------------------
+# Caching. Without these Netlify serves every file as max-age=0
+# must-revalidate, so each repeat visit re-checks every asset.
+#
+# Photographs are content-stable. When one changes, ship it under a NEW
+# filename rather than overwriting, otherwise cached visitors keep the old one.
+
+[[headers]]
+  for = "/assets/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# The stylesheet and logos keep Skalr's filenames, which never change, so they
+# get one day rather than a year: a Skalr style change reaches everyone within
+# a day without needing a rename.
+
+[[headers]]
+  for = "/assets/style.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"
+
+[[headers]]
+  for = "/assets/dr-chandni-logo.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"
+
+[[headers]]
+  for = "/assets/dr-chandni-logo-white.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"
+
+[[headers]]
+  for = "/assets/dr-chandni-logo.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"
+
+# HTML must always revalidate so copy, price and compliance changes go live
+# straight away. With an ETag a repeat visit costs a 304, not the full page.
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/privacy-policy/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# No CSP yet. The GHL form embed (api.skalragency.com), its resize script and
+# Google Fonts would each need allowing, and the analytics tags are still to
+# come. Add one, and test it against the live form, once the tags are final.
