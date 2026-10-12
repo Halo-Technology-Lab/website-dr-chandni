@@ -99,8 +99,29 @@ for (const file of fs.readdirSync(imgDir)) {
   }
 }
 
+// 7b. ad-compliance wording, and the intro videos: present, small, lazy
+for (const page of PAGES) {
+  const built = read(OUT, page);
+  check(!/botox|liquid\s*face\s*lift/i.test(built), `${page}: names Botox or uses "liquid facelift" (ad compliance)`);
+}
+const VIDEO_BUDGET = 4 * 1024 * 1024;
+for (const page of FORM_PAGES) {
+  const built = read(OUT, page);
+  for (const m of built.matchAll(/<video[\s\S]*?<\/video>/g)) {
+    const tag = m[0];
+    check(/preload="none"/.test(tag) && !/autoplay/.test(tag), `${page}: video must be preload="none" with no autoplay`);
+    for (const ref of [...tag.matchAll(/(?:src|poster)="(assets\/video\/[^"]+)"/g)].map((r) => r[1])) {
+      const f = path.join(OUT, ref);
+      check(fs.existsSync(f), `${page}: missing video asset ${ref}`);
+      if (fs.existsSync(f) && ref.endsWith('.mp4')) {
+        check(fs.statSync(f).size <= VIDEO_BUDGET, `${ref}: over the 4 MB video budget`);
+      }
+    }
+  }
+}
+
 // 8. no em or en dashes in files we author
-const ours = ['netlify.toml', 'README.md', 'scripts/build.mjs', 'scripts/verify.mjs', 'package.json'];
+const ours = ['netlify.toml', 'README.md', 'scripts/build.mjs', 'scripts/verify.mjs', 'scripts/encode-video.mjs', 'scripts/make-soft-photos.mjs', 'CHANGES-FOR-SKALR.md', 'package.json'];
 for (const f of ours) {
   const p = path.join(ROOT, f);
   if (fs.existsSync(p)) check(!/[\u2013\u2014]/.test(fs.readFileSync(p, 'utf8')), `${f}: contains an em or en dash`);

@@ -156,6 +156,11 @@ a:focus-visible,.btn:focus-visible,button:focus-visible,summary:focus-visible{
 .photo-wide{aspect-ratio:3/2;object-fit:cover}
 .hero-sub{font-size:16px;line-height:1.7;color:var(--charcoal);max-width:60ch;margin-top:18px}
 .hero-note{font-size:13px;color:var(--sage-ink);margin-top:16px}
+.hero-offer{font-size:15px;font-weight:500;line-height:1.6;color:var(--forest);margin:18px 0 0}
+
+/* ---- intro video (portrait 9:16; no autoplay, nothing downloads until play) ---- */
+.video-figure{margin:0 auto;max-width:360px}
+.video{display:block;width:100%;height:auto;aspect-ratio:9/16;background:var(--forest)}
 
 /* ---- journey steps (square cards) ---- */
 .steps{list-style:none;margin:0;padding:0;display:grid;gap:18px}
@@ -330,7 +335,7 @@ a:focus-visible,.btn:focus-visible,button:focus-visible,summary:focus-visible{
    PRINT  (facts a patient needs; no embed)
    ========================================================= */
 @media print{
-  .cta-group,.booking-box:not(.booking-fallback),.form-box,.skip,.photo,.consent,.header-phone,.accent-rule,.faq-mark{display:none !important}
+  .video-figure,.cta-group,.booking-box:not(.booking-fallback),.form-box,.skip,.photo,.consent,.header-phone,.accent-rule,.faq-mark{display:none !important}
   body{font-size:12px;color:#000;background:#fff}
   .band-taupe,.band-mist,.band-linen,.site-header,.site-footer{background:#fff !important}
   .faq[open] .faq-a,.faq-a{display:block !important}
