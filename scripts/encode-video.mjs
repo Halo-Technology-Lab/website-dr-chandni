@@ -4,7 +4,7 @@
 //   node scripts/encode-video.mjs <source.mp4> <output-stem> [poster-seconds]
 //
 // Example:
-//   node scripts/encode-video.mjs "C:/path/Facial Ver B.mp4" facial-intro-v1 0.8
+//   node scripts/encode-video.mjs "C:/path/Facial Ver B.mp4" facial-intro-v2 0.8
 //
 // Writes handover/assets/video/<stem>.mp4 and <stem>-poster.webp. Run
 // `npm run build` afterwards so site/ picks the files up.
@@ -31,14 +31,14 @@ fs.mkdirSync(OUT, { recursive: true });
 const mp4 = path.join(OUT, `${stem}.mp4`);
 const posterOut = path.join(OUT, `${stem}-poster.webp`);
 
-// 540x960 at 25 fps, constrained H.264. The clips are a person talking to camera
-// and are shown at most about 360px wide, so this is plenty. Mono speech audio.
+// 480x854 at 25 fps, constrained H.264. The clips are a person talking to camera
+// and are shown at most about 400px wide, so this is plenty. Mono speech audio.
 execFileSync('ffmpeg', [
   '-v', 'error', '-y', '-i', src,
-  '-vf', 'scale=540:960:flags=lanczos,fps=25',
+  '-vf', 'scale=480:854:flags=lanczos,fps=25',
   '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'slow',
-  '-crf', '30', '-maxrate', '550k', '-bufsize', '1100k', '-pix_fmt', 'yuv420p',
-  '-c:a', 'aac', '-ac', '1', '-b:a', '56k', '-ar', '32000',
+  '-crf', '33', '-maxrate', '360k', '-bufsize', '720k', '-pix_fmt', 'yuv420p',
+  '-c:a', 'aac', '-ac', '1', '-b:a', '48k', '-ar', '32000',
   '-movflags', '+faststart',
   mp4,
 ], { stdio: 'inherit' });
@@ -47,7 +47,7 @@ execFileSync('ffmpeg', [
 const tmp = path.join(os.tmpdir(), `${stem}-poster.png`);
 execFileSync('ffmpeg', [
   '-v', 'error', '-y', '-ss', posterAt, '-i', src,
-  '-vf', 'scale=540:960:flags=lanczos', '-frames:v', '1', tmp,
+  '-vf', 'scale=480:854:flags=lanczos', '-frames:v', '1', tmp,
 ], { stdio: 'inherit' });
 await sharp(tmp)
   .modulate({ brightness: 1.06, saturation: 0.92 })

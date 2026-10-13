@@ -145,7 +145,7 @@ a:focus-visible,.btn:focus-visible,button:focus-visible,summary:focus-visible{
 .header-phone:hover{background:var(--forest);color:var(--white)}
 
 /* ---- hero ---- */
-.hero{padding:44px 0 48px}
+.hero{padding:20px 0 44px}
 .hero-grid{display:grid;gap:32px}
 .hero-inner{max-width:820px}
 /* photographs: square corners and no shadow, in keeping with the rest */
@@ -158,9 +158,37 @@ a:focus-visible,.btn:focus-visible,button:focus-visible,summary:focus-visible{
 .hero-note{font-size:13px;color:var(--sage-ink);margin-top:16px}
 .hero-offer{font-size:15px;font-weight:500;line-height:1.6;color:var(--forest);margin:18px 0 0}
 
-/* ---- intro video (portrait 9:16; no autoplay, nothing downloads until play) ---- */
-.video-figure{margin:0 auto;max-width:360px}
-.video{display:block;width:100%;height:auto;aspect-ratio:9/16;background:var(--forest)}
+/* ---- hero video: portrait clip, muted autoplay, sound button ----
+   On phones it comes first, sized by viewport height so it sits above the fold
+   with the headline starting just beneath it. From 900px it takes the right-hand
+   column. The source is 9:16; object-fit crops it to 4:5 around the centre. */
+.hero-video{order:-1;display:flex;justify-content:center}
+.video-wrap{position:relative;max-width:100%}
+.video{
+  display:block;
+  height:min(48vh,440px);height:min(48svh,440px);
+  width:auto;max-width:100%;
+  aspect-ratio:4/5;object-fit:cover;
+  background:var(--forest);
+}
+.sound-btn{
+  position:absolute;top:12px;right:12px;z-index:2;
+  display:inline-flex;align-items:center;gap:8px;
+  min-height:44px;min-width:44px;padding:10px 16px;
+  border:0;border-radius:var(--radius-pill);
+  background:var(--black);color:var(--white);
+  font:500 14px/1 var(--font-text);cursor:pointer;
+  transition:background-color .2s ease;
+}
+.sound-btn[hidden]{display:none}
+.sound-btn:hover{background:var(--forest)}
+.sound-btn:focus-visible{outline:3px solid var(--white);outline-offset:0;box-shadow:0 0 0 6px var(--black)}
+.sound-icon{flex:none}
+/* speaker with a slash while the clip is muted, speaker with waves when sound is on */
+.sound-btn .slash{display:inline}
+.sound-btn .wave{display:none}
+.sound-btn[data-state="sound"] .slash{display:none}
+.sound-btn[data-state="sound"] .wave{display:inline}
 
 /* ---- journey steps (square cards) ---- */
 .steps{list-style:none;margin:0;padding:0;display:grid;gap:18px}
@@ -232,11 +260,11 @@ a:focus-visible,.btn:focus-visible,button:focus-visible,summary:focus-visible{
 /* ---- embedded enquiry form ---- */
 .form-box{
   width:100%;
-  min-height:1114px;            /* the builder's height; reserves space so the
-                                   page does not jump when the embed resizes */
+  min-height:360px;             /* first slide of the two-step survey (341px measured);
+                                   the resizer script grows the frame for slide 2 */
   background:var(--linen);
 }
-.form-frame{width:100%;height:1114px;border:0;display:block}
+.form-frame{width:100%;min-height:360px;border:0;display:block}
 .form-alt{font-size:14px;margin:20px 0 0;text-align:center}
 .form-alt a{display:inline-flex;align-items:center;min-height:44px}
 .fallback-alt a{display:inline-flex;align-items:center;min-height:44px}
@@ -296,6 +324,9 @@ a:focus-visible,.btn:focus-visible,button:focus-visible,summary:focus-visible{
   .section{padding:70px 0}
   .hero{padding:64px 0 68px}
   .hero-grid{grid-template-columns:1fr 0.82fr;gap:52px;align-items:center}
+  .hero-video{order:0;display:block}
+  .video-wrap{width:100%}
+  .video{width:100%;height:auto;max-height:calc(100vh - 170px);max-height:calc(100svh - 170px)}
   .hero-inner{max-width:none}
   .steps{grid-template-columns:repeat(3,1fr)}
   .pillars{grid-template-columns:repeat(4,1fr)}
@@ -335,7 +366,7 @@ a:focus-visible,.btn:focus-visible,button:focus-visible,summary:focus-visible{
    PRINT  (facts a patient needs; no embed)
    ========================================================= */
 @media print{
-  .video-figure,.cta-group,.booking-box:not(.booking-fallback),.form-box,.skip,.photo,.consent,.header-phone,.accent-rule,.faq-mark{display:none !important}
+  .hero-video,.cta-group,.booking-box:not(.booking-fallback),.form-box,.skip,.photo,.consent,.header-phone,.accent-rule,.faq-mark{display:none !important}
   body{font-size:12px;color:#000;background:#fff}
   .band-taupe,.band-mist,.band-linen,.site-header,.site-footer{background:#fff !important}
   .faq[open] .faq-a,.faq-a{display:block !important}

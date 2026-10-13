@@ -40,10 +40,10 @@ const BUDGET = { 640: 100_000, 960: 160_000, 1280: 240_000 };
 // Expected <picture> wraps per page. A mismatch means Skalr's markup changed
 // shape and the transform needs a look, so the build stops rather than guess.
 const EXPECTED_WRAPS = {
-  'facial-rebalancing-google.html': 2,
-  'facial-rebalancing-meta.html': 2,
-  'co2-laser-google.html': 2,
-  'co2-laser-meta.html': 2,
+  'facial-rebalancing-google.html': 1,
+  'facial-rebalancing-meta.html': 1,
+  'co2-laser-google.html': 1,
+  'co2-laser-meta.html': 1,
   'thank-you.html': 0,
   'privacy-policy/index.html': 0,
 };

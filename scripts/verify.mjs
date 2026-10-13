@@ -71,12 +71,25 @@ for (const page of PAGES) {
   }
 }
 
-// 5. both form embeds keep data-cookie-consent and their own form id
+// 5. each page carries its own two-step survey embed (Skalr, 13 October 2026),
+//    keeps data-cookie-consent, and loads the resizer exactly once
+const SURVEY = {
+  'facial-rebalancing-google.html': 'cXwzQ2RQHrIxE0TCVJ9E',
+  'facial-rebalancing-meta.html': 'cXwzQ2RQHrIxE0TCVJ9E',
+  'co2-laser-google.html': 'PuWcVDeTk3RnDIFO66wf',
+  'co2-laser-meta.html': 'PuWcVDeTk3RnDIFO66wf',
+};
+const OLD_FORMS = ['Wdhw7eu5duW01zXlg7xL', 'V96BZDbxDTdyGr441EWk'];
 for (const page of FORM_PAGES) {
   const built = read(OUT, page);
-  check(/<iframe class="form-frame"[\s\S]*?data-cookie-consent="true"/.test(built), `${page}: data-cookie-consent missing on form`);
-  check(built.includes('https://api.skalragency.com/js/form_embed.js'), `${page}: form_embed.js missing`);
-  check((built.match(/<picture>/g) || []).length === 2, `${page}: expected 2 <picture> elements`);
+  const id = SURVEY[page];
+  const other = Object.values(SURVEY).find((v) => v !== id);
+  check(built.includes(`src="https://api.skalragency.com/widget/survey/${id}"`) && built.includes(`id="${id}"`), `${page}: survey ${id} missing or mismatched`);
+  check(!built.includes(other), `${page}: carries the other treatment's survey`);
+  check(!OLD_FORMS.some((o) => built.includes(o)), `${page}: still references an old single-page form`);
+  check(/<iframe class="form-frame"[\s\S]*?data-cookie-consent="true"[\s\S]*?data-cookie-consent-provider="auto"/.test(built), `${page}: data-cookie-consent missing on form`);
+  check((built.match(/form_embed\.js/g) || []).length === 1, `${page}: form_embed.js must appear exactly once`);
+  check((built.match(/<picture>/g) || []).length === 1, `${page}: expected 1 <picture> element`);
 }
 
 // 6. thank-you.html at the root, privacy notice at /privacy-policy/
@@ -99,23 +112,31 @@ for (const file of fs.readdirSync(imgDir)) {
   }
 }
 
-// 7b. ad-compliance wording, and the intro videos: present, small, lazy
+// 7b. ad-compliance wording, and the hero videos: present, muted autoplay, sound button, small
 for (const page of PAGES) {
   const built = read(OUT, page);
   check(!/botox|liquid\s*face\s*lift/i.test(built), `${page}: names Botox or uses "liquid facelift" (ad compliance)`);
 }
-const VIDEO_BUDGET = 4 * 1024 * 1024;
+const VIDEO_BUDGET = 2 * 1024 * 1024;
+const VIDEO = {
+  'facial-rebalancing-google.html': 'facial-intro-v2',
+  'facial-rebalancing-meta.html': 'facial-intro-v2',
+  'co2-laser-google.html': 'co2-intro-v2',
+  'co2-laser-meta.html': 'co2-intro-v2',
+};
 for (const page of FORM_PAGES) {
   const built = read(OUT, page);
-  for (const m of built.matchAll(/<video[\s\S]*?<\/video>/g)) {
-    const tag = m[0];
-    check(/preload="none"/.test(tag) && !/autoplay/.test(tag), `${page}: video must be preload="none" with no autoplay`);
-    for (const ref of [...tag.matchAll(/(?:src|poster)="(assets\/video\/[^"]+)"/g)].map((r) => r[1])) {
-      const f = path.join(OUT, ref);
-      check(fs.existsSync(f), `${page}: missing video asset ${ref}`);
-      if (fs.existsSync(f) && ref.endsWith('.mp4')) {
-        check(fs.statSync(f).size <= VIDEO_BUDGET, `${ref}: over the 4 MB video budget`);
-      }
+  const heroAt = built.indexOf('class="hero-figure hero-video"');
+  const tag = (built.match(/<video[\s\S]*?<\/video>/) || [''])[0];
+  check(heroAt > -1 && heroAt < built.indexOf('id="what-h"'), `${page}: hero video missing from the hero`);
+  check(/ autoplay /.test(tag) && / muted /.test(tag) && / playsinline /.test(tag), `${page}: video must be autoplay, muted and playsinline`);
+  check(built.includes('class="sound-btn"') && built.includes('sound-label'), `${page}: visible sound button missing`);
+  check(tag.includes(`assets/video/${VIDEO[page]}.mp4`) && tag.includes(`assets/video/${VIDEO[page]}-poster.webp`), `${page}: wrong or missing video source/poster`);
+  for (const ref of [...tag.matchAll(/(?:src|poster)="(assets\/video\/[^"]+)"/g)].map((r) => r[1])) {
+    const f = path.join(OUT, ref);
+    check(fs.existsSync(f), `${page}: missing video asset ${ref}`);
+    if (fs.existsSync(f) && ref.endsWith('.mp4')) {
+      check(fs.statSync(f).size <= VIDEO_BUDGET, `${ref}: over the 2 MB video budget`);
     }
   }
 }
