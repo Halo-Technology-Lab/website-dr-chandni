@@ -26,6 +26,11 @@ These edits were made directly in `handover/` (and rebuilt into `site/`). They d
    - Files: `facial-intro-v2.mp4` (1.05 MB) and `co2-intro-v2.mp4` (1.7 MB), 480x854, 25 fps, H.264 with mono AAC, from 73 MB and 100 MB masters, plus a lighter, softer graded WebP poster each. Cached for a year in `netlify.toml`. Because they autoplay, each visitor now downloads the video on load (about 1 to 1.7 MB) instead of only the poster.
    - The old hero photos (`clinic-consultation-*`, `clinic-laser-treatment-*`) are removed as nothing uses them now. Re-encode with `scripts/encode-video.mjs` under a new filename if a video changes.
 9. **Lighter, softer photo grade** on the Google pages only: the four photos are now `*-soft-*` files (brightness up, saturation and contrast down) made by `scripts/make-soft-photos.mjs`. The Meta pages keep the ungraded `*-v2-*` photos.
+10. **Facial Rebalancing Meta: combination treatment from £700** (15 October 2026), so the Meta page matches the Google page on what the treatment is and what it costs. The Meta voice is otherwise kept.
+   - Price card: now "Facial Rebalancing is a combination treatment, priced from £700." (the 4 ml wording is gone).
+   - Cost FAQ: now the Google page's answer (from £700, final price depends on what your face needs, £50 consultation redeemable).
+   - Meta description, "What it is" body and the "What exactly is Facial Rebalancing?" FAQ: "dermal filler treatment" is now "combination treatment", with "using dermal filler, biostimulators and other treatments where needed" added to the body and FAQ.
+   - **Deliberately not copied from the Google page:** "Dr Chandni herself" (the Meta page still says "your practitioner" and "one of our qualified practitioners"), as that is still awaiting Josh's compliance sign-off (item 7).
 
 ## GoHighLevel form (Skalr)
 
