@@ -31,6 +31,9 @@ These edits were made directly in `handover/` (and rebuilt into `site/`). They d
    - Cost FAQ: now the Google page's answer (from £700, final price depends on what your face needs, £50 consultation redeemable).
    - Meta description, "What it is" body and the "What exactly is Facial Rebalancing?" FAQ: "dermal filler treatment" is now "combination treatment", with "using dermal filler, biostimulators and other treatments where needed" added to the body and FAQ.
    - **Deliberately not copied from the Google page:** "Dr Chandni herself" (the Meta page still says "your practitioner" and "one of our qualified practitioners"), as that is still awaiting Josh's compliance sign-off (item 7).
+11. **Updated hero videos** (16 October 2026): new edits of Facial Ver B and CO2 Ver A replace the first versions on all four pages. Same layout, behaviour and encode settings as item 8.
+   - Files are now `facial-intro-v3.mp4` (1.01 MB) and `co2-intro-v3.mp4` (1.68 MB) plus `-poster.webp` each, under new filenames because videos are cached for a year. The v2 files are removed.
+   - Page references are the only HTML change: `assets/video/*-intro-v3*` in the `<video>` tag.
 
 ## GoHighLevel form (Skalr)
 

@@ -4,7 +4,7 @@
 //   node scripts/encode-video.mjs <source.mp4> <output-stem> [poster-seconds]
 //
 // Example:
-//   node scripts/encode-video.mjs "C:/path/Facial Ver B.mp4" facial-intro-v2 0.8
+//   node scripts/encode-video.mjs "C:/path/Facial Ver B.mp4" facial-intro-v3 0.8
 //
 // Writes handover/assets/video/<stem>.mp4 and <stem>-poster.webp. Run
 // `npm run build` afterwards so site/ picks the files up.

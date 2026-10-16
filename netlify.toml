@@ -36,7 +36,7 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 # Videos follow the same rule as photographs: a changed video ships under a new
-# filename (e.g. facial-intro-v2.mp4), never over the old one.
+# filename (e.g. facial-intro-v3.mp4), never over the old one.
 
 [[headers]]
   for = "/assets/video/*"

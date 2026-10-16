@@ -119,10 +119,10 @@ for (const page of PAGES) {
 }
 const VIDEO_BUDGET = 2 * 1024 * 1024;
 const VIDEO = {
-  'facial-rebalancing-google.html': 'facial-intro-v2',
-  'facial-rebalancing-meta.html': 'facial-intro-v2',
-  'co2-laser-google.html': 'co2-intro-v2',
-  'co2-laser-meta.html': 'co2-intro-v2',
+  'facial-rebalancing-google.html': 'facial-intro-v3',
+  'facial-rebalancing-meta.html': 'facial-intro-v3',
+  'co2-laser-google.html': 'co2-intro-v3',
+  'co2-laser-meta.html': 'co2-intro-v3',
 };
 for (const page of FORM_PAGES) {
   const built = read(OUT, page);
