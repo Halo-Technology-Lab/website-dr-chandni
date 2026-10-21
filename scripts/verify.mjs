@@ -50,8 +50,12 @@ for (const page of PAGES) {
   const slotEnd = built.indexOf('-->', slotAt);
   const afterSlot = built.slice(slotEnd + 3, built.indexOf('</head>'));
   check(consentAt > -1 && slotAt > -1 && consentAt < slotAt, `${page}: consent defaults must precede the analytics slot`);
-  check(!/googletagmanager|gtag\/js|fbevents|connect\.facebook/.test(built), `${page}: a tracking tag is present before approval`);
-  check(!/<script/.test(afterSlot), `${page}: a script has been added after the analytics slot`);
+  // GTM, Meta Pixel and CallRail are added (approved 21 Oct 2026). Meta must start revoked and CallRail must load only on consent.
+  check(built.includes('GTM-WJHJXF5S') && built.includes('4239471523047564'), `${page}: GTM or Meta Pixel tag missing`);
+  check(built.indexOf("fbq('consent', 'revoke')") > -1 && built.indexOf("fbq('consent', 'revoke')") < built.indexOf("fbq('init'"), `${page}: Meta Pixel must revoke consent before init`);
+  check(built.indexOf('googletagmanager.com/gtm.js') > consentAt, `${page}: GTM must load after the consent defaults`);
+  check(!/<script[^>]*src=["']?\/\/cdn\.callrail/.test(built), `${page}: CallRail must be loaded by the consent-gated loader, not a static script tag`);
+  check(built.includes('cdn.callrail.com/companies/177909618/6156c5254b7bd1f4e2f3/12/swap.js'), `${page}: CallRail tag missing`);
 
   // 3. noindex, consent banner, cookie settings link, privacy link
   check(built.includes('<meta name="robots" content="noindex, follow">'), `${page}: noindex, follow missing`);
