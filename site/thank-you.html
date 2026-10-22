@@ -34,6 +34,17 @@ gtag('consent', 'default', {
      breach, and qa_pages.py fails the build if this slot is
      filled while PRIVACY_POLICY_URL is unset.
      ========================================================= -->
+<!-- Enhanced conversions: read em/ph from the CRM redirect, hand them to GTM, then strip them from the address bar. Stores nothing. Must run before GTM loads. -->
+<script>
+(function(){try{
+var q=new URLSearchParams(location.search), em=(q.get('em')||'').trim(), ph=(q.get('ph')||'').trim();
+if(em.indexOf('{{')>-1) em=''; if(ph.indexOf('{{')>-1) ph='';
+if(em||ph){ window.dataLayer=window.dataLayer||[];
+window.dataLayer.push({event:'dca_user_data', user_data:{email:em||undefined, phone_number:ph||undefined}});
+q.delete('em'); q.delete('ph'); var s=q.toString();
+history.replaceState(null,'',location.pathname+(s?'?'+s:'')+location.hash); }
+}catch(e){}})();
+</script>
 <!-- Google Tag Manager (runs after the consent defaults above, so Consent Mode v2 applies) -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
