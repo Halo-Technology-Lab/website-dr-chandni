@@ -7,9 +7,6 @@
 <title>What Facial Rebalancing Is | Dr Chandni Aesthetics</title>
 <meta name="description" content="Ever felt your face looks out of balance? Facial Rebalancing is a consultation-led combination treatment in Banstead, Surrey. Start with a free call.">
 <meta name="robots" content="noindex, follow">
-<link rel="preload" as="image" href="assets/video/facial-intro-v3-poster.webp" type="image/webp" fetchpriority="high">
-<link rel="preload" as="font" type="font/woff2" href="assets/fonts/montserrat-latin-var.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="assets/fonts/cormorant-upright-500-latin.woff2" crossorigin>
 <script>
 /* Consent defaults. This runs before any tag so that a tag added later cannot
    fire before a choice is made. Google Consent Mode v2 signals are set to
@@ -62,6 +59,9 @@ document.addEventListener('dca:consent', function (e) {
 });
 </script>
 <!-- End Meta Pixel Code -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Upright:wght@500;700&family=Montserrat:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -91,8 +91,7 @@ document.addEventListener('dca:consent', function (e) {
     </div>
     <figure class="hero-figure hero-video">
       <div class="video-wrap">
-        <video class="video" muted loop playsinline preload="none"
-               data-mobile-src="assets/video/facial-intro-v3-m.mp4"
+        <video class="video" autoplay muted loop playsinline preload="auto"
                poster="assets/video/facial-intro-v3-poster.webp"
                aria-label="Dr Chandni talks about Facial Rebalancing"
                width="480" height="854">
@@ -105,19 +104,15 @@ document.addEventListener('dca:consent', function (e) {
       </div>
     </figure>
     <script>
-/* Hero video: the poster is the LCP image and the clip is not fetched until it is
-   needed. Desktop starts it once the page has loaded and the browser is idle. Phones
-   start it on the first touch, scroll or key press, using a small (under 500 KB)
-   version of the clip. Nothing here sets or reads cookies or contacts a third party.
-   Reduced-motion and data-saver visitors get the poster and a play button only. */
+/* Hero video: muted autoplay with a visible sound button. Nothing here sets or reads
+   cookies or contacts a third party. Reduced-motion and data-saver visitors get the
+   poster and a play button instead of autoplay. */
 (function () {
   var v = document.querySelector('.hero-video .video');
   var b = document.querySelector('.hero-video .sound-btn');
   if (!v || !b) return;
   var t = b.querySelector('.sound-label');
-  var state = 'idle';
-  var started = false;
-  var phone = window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+  var state = 'muted';
   function show(s) {
     state = s;
     var label = { muted: 'Sound on', sound: 'Mute', idle: 'Play with sound', ended: 'Replay with sound' }[s];
@@ -125,22 +120,11 @@ document.addEventListener('dca:consent', function (e) {
     b.setAttribute('aria-pressed', s === 'sound' ? 'true' : 'false');
     b.setAttribute('data-state', s);
   }
-  function load() {
-    if (phone && !v.getAttribute('src')) v.src = v.getAttribute('data-mobile-src');
-  }
   function playWithSound() {
-    started = true; load();
     v.currentTime = 0; v.muted = false; v.loop = false;
     var p = v.play();
     if (p && p.catch) p.catch(function () { v.muted = true; v.loop = true; show('idle'); });
     show('sound');
-  }
-  function startMuted() {
-    if (started) return;
-    started = true; load();
-    var p = v.play();
-    if (p && p.catch) p.catch(function () { show('idle'); });
-    show('muted');
   }
   b.addEventListener('click', function () {
     if (state === 'sound') { v.muted = true; v.loop = true; show('muted'); }
@@ -150,18 +134,12 @@ document.addEventListener('dca:consent', function (e) {
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var saver = navigator.connection && navigator.connection.saveData;
   b.hidden = false;
-  show('idle');
-  if (reduce || saver) return;
-  if (phone) {
-    ['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach(function (e) {
-      window.addEventListener(e, startMuted, { once: true, passive: true });
-    });
+  if (reduce || saver) {
+    v.removeAttribute('autoplay'); v.pause(); show('idle');
   } else {
-    var go = function () {
-      if (window.requestIdleCallback) window.requestIdleCallback(startMuted, { timeout: 2000 });
-      else setTimeout(startMuted, 200);
-    };
-    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+    show('muted');
+    var p = v.play();
+    if (p && p.catch) p.catch(function () { show('idle'); });
   }
 })();
 </script>
@@ -370,26 +348,7 @@ document.addEventListener('dca:consent', function (e) {
   } catch (e) { /* fail safe: never block the page */ }
 })();
 </script>
-<script>
-/* LeadConnector form resizer: loaded when the survey is about to scroll into view,
-   not in the critical path. The survey embed itself is untouched. */
-(function () {
-  var done = false;
-  function load() {
-    if (done) return;
-    done = true;
-    var s = document.createElement('script');
-    s.src = 'https://api.skalragency.com/js/form_embed.js';
-    s.async = true;
-    document.body.appendChild(s);
-  }
-  var box = document.querySelector('.form-box');
-  if (!box || !('IntersectionObserver' in window)) { load(); return; }
-  new IntersectionObserver(function (entries, obs) {
-    if (entries[0].isIntersecting) { obs.disconnect(); load(); }
-  }, { rootMargin: '800px 0px' }).observe(box);
-})();
-</script>
+<script src="https://api.skalragency.com/js/form_embed.js"></script>
 <script>
 (function () {
   var KEY = 'dca-consent-v1';
