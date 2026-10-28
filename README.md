@@ -2,14 +2,14 @@
 
 Paid landing pages for Dr Chandni Aesthetics, Banstead. Built by Skalr, deployed by Halo Technology Lab on Netlify.
 
-| URL | Page |
-|---|---|
-| `/facial-rebalancing-google.html` | Facial Rebalancing, Google Ads traffic |
-| `/facial-rebalancing-meta.html` | Facial Rebalancing, Meta traffic |
-| `/co2-laser-google.html` | CO2 laser, Google Ads traffic |
-| `/co2-laser-meta.html` | CO2 laser, Meta traffic |
+| URL                                    | Page                                            |
+| -------------------------------------- | ----------------------------------------------- |
+| `/facial-rebalancing-google.html`      | Facial Rebalancing, Google Ads traffic          |
+| `/facial-rebalancing-meta.html`        | Facial Rebalancing, Meta traffic                |
+| `/co2-laser-google.html`               | CO2 laser, Google Ads traffic                   |
+| `/co2-laser-meta.html`                 | CO2 laser, Meta traffic                         |
 | `/thank-you.html?t=facial` or `?t=co2` | GHL form redirect target and the conversion URL |
-| `/privacy-policy/` | Privacy notice (still a **draft**) |
+| `/privacy-policy/`                     | Privacy notice (still a **draft**)              |
 
 There is no page at `/`. That is deliberate: the handover has six pages and the ads link to them directly.
 
