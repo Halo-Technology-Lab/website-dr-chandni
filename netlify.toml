@@ -43,6 +43,14 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Self-hosted fonts. The filenames carry the family, subset and weight, so a
+# changed font ships under a new name and these can be cached for a year.
+
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 # The stylesheet and logos keep Skalr's filenames, which never change, so they
 # get one day rather than a year: a Skalr style change reaches everyone within
 # a day without needing a rename.

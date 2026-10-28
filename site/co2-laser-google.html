@@ -7,6 +7,9 @@
 <title>CO2 Laser Resurfacing in Banstead | Dr Chandni</title>
 <meta name="description" content="CO2 laser skin resurfacing with the Cutera Secret PRO, for skin texture, tone and laxity. Book a free phone consultation in Banstead, Surrey.">
 <meta name="robots" content="noindex, follow">
+<link rel="preload" as="image" href="assets/video/co2-intro-v3-poster.webp" type="image/webp" fetchpriority="high">
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/montserrat-latin-var.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/cormorant-upright-500-latin.woff2" crossorigin>
 <script>
 /* Consent defaults. This runs before any tag so that a tag added later cannot
    fire before a choice is made. Google Consent Mode v2 signals are set to
@@ -59,12 +62,9 @@ document.addEventListener('dca:consent', function (e) {
 });
 </script>
 <!-- End Meta Pixel Code -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Upright:wght@500;700&family=Montserrat:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
+<body class="has-action-bar">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap header-inner">
@@ -76,7 +76,7 @@ document.addEventListener('dca:consent', function (e) {
   </div>
 </header>
 <main id="main">
-<section class="hero band-linen">
+<section id="hero" class="hero band-linen">
   <div class="wrap hero-grid">
     <div class="hero-inner">
       <p class="eyebrow">CO2 laser resurfacing &middot; Banstead, Surrey</p>
@@ -84,7 +84,7 @@ document.addEventListener('dca:consent', function (e) {
       <h1>CO2 Laser Resurfacing in Banstead</h1>
       <p class="hero-sub">A skin resurfacing treatment using the Cutera Secret PRO, to improve the texture, tone and laxity of your skin. It starts with a free phone consultation.</p>
       <div class="cta-group">
-    <a class="btn btn-primary" href="#booking">Arrange your free phone consultation</a>
+    <a class="btn btn-primary" href="#book">Arrange your free phone consultation</a>
     <a class="btn btn-secondary" href="tel:+442080449260">Call the clinic</a>
   </div>
       <p class="hero-offer">Book through this page for a free skin analysis and a complimentary HydraFacial.*</p>
@@ -92,7 +92,8 @@ document.addEventListener('dca:consent', function (e) {
     </div>
     <figure class="hero-figure hero-video">
       <div class="video-wrap">
-        <video class="video" autoplay muted loop playsinline preload="auto"
+        <video class="video" muted loop playsinline preload="none"
+               data-mobile-src="assets/video/co2-intro-v3-m.mp4"
                poster="assets/video/co2-intro-v3-poster.webp"
                aria-label="Dr Chandni talks about CO2 laser resurfacing"
                width="480" height="854">
@@ -105,15 +106,19 @@ document.addEventListener('dca:consent', function (e) {
       </div>
     </figure>
     <script>
-/* Hero video: muted autoplay with a visible sound button. Nothing here sets or reads
-   cookies or contacts a third party. Reduced-motion and data-saver visitors get the
-   poster and a play button instead of autoplay. */
+/* Hero video: the poster is the LCP image and the clip is not fetched until it is
+   needed. Desktop starts it once the page has loaded and the browser is idle. Phones
+   start it on the first touch, scroll or key press, using a small (under 500 KB)
+   version of the clip. Nothing here sets or reads cookies or contacts a third party.
+   Reduced-motion and data-saver visitors get the poster and a play button only. */
 (function () {
   var v = document.querySelector('.hero-video .video');
   var b = document.querySelector('.hero-video .sound-btn');
   if (!v || !b) return;
   var t = b.querySelector('.sound-label');
-  var state = 'muted';
+  var state = 'idle';
+  var started = false;
+  var phone = window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
   function show(s) {
     state = s;
     var label = { muted: 'Sound on', sound: 'Mute', idle: 'Play with sound', ended: 'Replay with sound' }[s];
@@ -121,11 +126,22 @@ document.addEventListener('dca:consent', function (e) {
     b.setAttribute('aria-pressed', s === 'sound' ? 'true' : 'false');
     b.setAttribute('data-state', s);
   }
+  function load() {
+    if (phone && !v.getAttribute('src')) v.src = v.getAttribute('data-mobile-src');
+  }
   function playWithSound() {
+    started = true; load();
     v.currentTime = 0; v.muted = false; v.loop = false;
     var p = v.play();
     if (p && p.catch) p.catch(function () { v.muted = true; v.loop = true; show('idle'); });
     show('sound');
+  }
+  function startMuted() {
+    if (started) return;
+    started = true; load();
+    var p = v.play();
+    if (p && p.catch) p.catch(function () { show('idle'); });
+    show('muted');
   }
   b.addEventListener('click', function () {
     if (state === 'sound') { v.muted = true; v.loop = true; show('muted'); }
@@ -135,15 +151,26 @@ document.addEventListener('dca:consent', function (e) {
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var saver = navigator.connection && navigator.connection.saveData;
   b.hidden = false;
-  if (reduce || saver) {
-    v.removeAttribute('autoplay'); v.pause(); show('idle');
+  show('idle');
+  if (reduce || saver) return;
+  if (phone) {
+    ['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach(function (e) {
+      window.addEventListener(e, startMuted, { once: true, passive: true });
+    });
   } else {
-    show('muted');
-    var p = v.play();
-    if (p && p.catch) p.catch(function () { show('idle'); });
+    var go = function () {
+      if (window.requestIdleCallback) window.requestIdleCallback(startMuted, { timeout: 2000 });
+      else setTimeout(startMuted, 200);
+    };
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
   }
 })();
 </script>
+  </div>
+</section>
+<section class="price-strip band-mist" aria-label="Price at a glance">
+  <div class="wrap wrap-narrow">
+    <p><strong>CO2 laser resurfacing:</strong> full face £600 per session, face and neck £700, small areas from £300. In-clinic consultation £50, redeemable against treatment. Prices correct at September 2026.</p>
   </div>
 </section>
 <section class="section band-taupe" aria-labelledby="what-h">
@@ -161,7 +188,7 @@ document.addEventListener('dca:consent', function (e) {
            width="1280" height="853" loading="lazy" decoding="async"></picture></figure>
   </div>
 </section>
-<section class="section band-linen" aria-labelledby="journey-h">
+<section id="process" class="section band-linen" aria-labelledby="journey-h">
   <div class="wrap">
     <div class="sec-head sec-head-centered">
     <p class="eyebrow">How it works</p>
@@ -192,7 +219,7 @@ document.addEventListener('dca:consent', function (e) {
     </ol>
   </div>
 </section>
-<section class="section band-linen" aria-labelledby="price-h">
+<section id="price" class="section band-linen" aria-labelledby="price-h">
   <div class="wrap wrap-narrow">
     <div class="sec-head sec-head-centered">
     <p class="eyebrow">Cost</p>
@@ -206,7 +233,7 @@ document.addEventListener('dca:consent', function (e) {
     </div>
   </div>
 </section>
-<section class="section band-mist" aria-labelledby="faq-h">
+<section id="faq" class="section band-mist" aria-labelledby="faq-h">
   <div class="wrap wrap-narrow">
     <div class="sec-head sec-head-centered">
     <p class="eyebrow">Good to know</p>
@@ -237,7 +264,7 @@ document.addEventListener('dca:consent', function (e) {
     </div>
   </div>
 </section>
-<section id="booking" class="section band-linen" aria-labelledby="book-h">
+<section id="book" class="section band-linen" aria-labelledby="book-h">
   <div class="wrap wrap-narrow">
     <div class="sec-head sec-head-centered">
     <p class="eyebrow">Get started</p>
@@ -293,6 +320,10 @@ document.addEventListener('dca:consent', function (e) {
        <a href="#" data-consent-reopen>Cookie settings</a></p>
   </div>
 </footer>
+<nav class="action-bar" aria-label="Call or book">
+  <a class="btn btn-primary action-call" href="tel:+442080449260">Call <span class="action-num">+44 20 8044 9260</span></a>
+  <a class="btn btn-secondary action-book" href="#book">Book free phone call</a>
+</nav>
 <div class="consent" id="dca-consent" role="region"
      aria-label="Cookie choices" hidden>
   <div class="consent-inner">
@@ -329,7 +360,26 @@ document.addEventListener('dca:consent', function (e) {
   } catch (e) { /* fail safe: never block the page */ }
 })();
 </script>
-<script src="https://api.skalragency.com/js/form_embed.js"></script>
+<script>
+/* LeadConnector form resizer: loaded when the survey is about to scroll into view,
+   not in the critical path. The survey embed itself is untouched. */
+(function () {
+  var done = false;
+  function load() {
+    if (done) return;
+    done = true;
+    var s = document.createElement('script');
+    s.src = 'https://api.skalragency.com/js/form_embed.js';
+    s.async = true;
+    document.body.appendChild(s);
+  }
+  var box = document.querySelector('.form-box');
+  if (!box || !('IntersectionObserver' in window)) { load(); return; }
+  new IntersectionObserver(function (entries, obs) {
+    if (entries[0].isIntersecting) { obs.disconnect(); load(); }
+  }, { rootMargin: '800px 0px' }).observe(box);
+})();
+</script>
 <script>
 (function () {
   var KEY = 'dca-consent-v1';
@@ -389,6 +439,17 @@ document.addEventListener('dca:consent', function (e) {
     var f = el.querySelector('.consent-btn');
     if (f) { try { f.focus(); } catch (e) {} }
   });
+})();
+</script>
+<script>
+/* Mobile action bar: shown under 768px (CSS), hidden while the booking section is in view. */
+(function () {
+  var bar = document.querySelector('.action-bar');
+  var sec = document.getElementById('book');
+  if (!bar || !sec || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (entries) {
+    bar.classList.toggle('is-hidden', entries[0].isIntersecting);
+  }).observe(sec);
 })();
 </script>
 <!-- CallRail call tracking: loaded only once the visitor has accepted cookies -->

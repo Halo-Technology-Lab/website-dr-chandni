@@ -133,7 +133,15 @@ for (const page of FORM_PAGES) {
   const heroAt = built.indexOf('class="hero-figure hero-video"');
   const tag = (built.match(/<video[\s\S]*?<\/video>/) || [''])[0];
   check(heroAt > -1 && heroAt < built.indexOf('id="what-h"'), `${page}: hero video missing from the hero`);
-  check(/ autoplay /.test(tag) && / muted /.test(tag) && / playsinline /.test(tag), `${page}: video must be autoplay, muted and playsinline`);
+  // Speed work (Oct 2026): the clip is not fetched up front. The script starts it on idle (desktop) or first interaction (phones).
+  check(/ muted /.test(tag) && / playsinline /.test(tag) && !/ autoplay /.test(tag), `${page}: video must be muted and playsinline, started by script rather than autoplay`);
+  check(/preload="none"/.test(tag), `${page}: video must be preload="none"`);
+  check(tag.includes(`data-mobile-src="assets/video/${VIDEO[page]}-m.mp4"`), `${page}: video missing its mobile source`);
+  check(built.includes(`<link rel="preload" as="image" href="assets/video/${VIDEO[page]}-poster.webp" type="image/webp" fetchpriority="high">`), `${page}: poster must be preloaded as the LCP image`);
+  check(!/fonts\.googleapis\.com|fonts\.gstatic\.com/.test(built), `${page}: still references Google Fonts`);
+  check(/rel="preload" as="font" type="font\/woff2" href="assets\/fonts\/montserrat-latin-var\.woff2" crossorigin/.test(built), `${page}: Montserrat preload missing`);
+  check(!/<script[^>]*src="[^"]*form_embed\.js/.test(built), `${page}: form_embed.js must be injected on scroll, not a static script tag`);
+  check(!/turnstile|challenges\.cloudflare\.com/i.test(built), `${page}: Cloudflare Turnstile should not be on the page`);
   check(built.includes('class="sound-btn"') && built.includes('sound-label'), `${page}: visible sound button missing`);
   check(tag.includes(`assets/video/${VIDEO[page]}.mp4`) && tag.includes(`assets/video/${VIDEO[page]}-poster.webp`), `${page}: wrong or missing video source/poster`);
   for (const ref of [...tag.matchAll(/(?:src|poster)="(assets\/video\/[^"]+)"/g)].map((r) => r[1])) {
@@ -143,6 +151,8 @@ for (const page of FORM_PAGES) {
       check(fs.statSync(f).size <= VIDEO_BUDGET, `${ref}: over the 2 MB video budget`);
     }
   }
+  const mobile = path.join(OUT, `assets/video/${VIDEO[page]}-m.mp4`);
+  check(fs.existsSync(mobile) && fs.statSync(mobile).size < 500_000, `${VIDEO[page]}-m.mp4: missing or over the 500 KB phone budget`);
 }
 
 // 8. no em or en dashes in files we author
