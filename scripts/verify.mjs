@@ -92,6 +92,14 @@ for (const page of FORM_PAGES) {
   check(!built.includes(other), `${page}: carries the other treatment's survey`);
   check(!OLD_FORMS.some((o) => built.includes(o)), `${page}: still references an old single-page form`);
   check(/<iframe class="form-frame"[\s\S]*?data-cookie-consent="true"[\s\S]*?data-cookie-consent-provider="auto"/.test(built), `${page}: data-cookie-consent missing on form`);
+  check(/<iframe class="form-frame" loading="lazy"/.test(built), `${page}: survey iframe must be loading="lazy"`);
+  if (page.endsWith('-google.html')) {
+    // ids: new section ids, the heading ids the Google Ads sitelinks use, and the #booking alias for the old sitelinks
+    for (const id of ['hero', 'process', 'price', 'faq', 'book', 'booking', 'price-h', 'faq-h', 'book-h']) {
+      check(built.includes(`id="${id}"`), `${page}: id="${id}" missing`);
+    }
+    check(built.includes('href="tel:+442080449260"') && built.includes('<span class="action-num">+44 20 8044 9260</span>'), `${page}: action bar call button must use the live phone text and tel: href`);
+  }
   check((built.match(/form_embed\.js/g) || []).length === 1, `${page}: form_embed.js must appear exactly once`);
   check((built.match(/<picture>/g) || []).length === 1, `${page}: expected 1 <picture> element`);
 }
